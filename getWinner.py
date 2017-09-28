@@ -118,8 +118,7 @@ def get_winner(player_hands, table_cards):
     """
     for hand in player_hands:
         hand_str = [x.card for x in hand.cards]
-        table_cards_str = [x.card for x in table_cards]
-        hand_list = list(itertools.combinations(hand_str + table_cards_str, 5))
+        hand_list = list(itertools.combinations(hand_str + table_cards, 5))
         hand_list = [list(x) for x in hand_list]
         if is_royal_flush(hand, hand_list):
             hand.value = 10
