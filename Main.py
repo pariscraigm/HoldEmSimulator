@@ -1,17 +1,16 @@
-from Card import Card
-from Hand import Hand
+from . import Card
+from . import Hand
 import getWinner
 from random import seed, randint, shuffle
 from datetime import datetime
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import pandas as pd
-from progress.bar import Bar
-import sys
+from progress.bar import IncrementalBar
 
 def main():
 
-    simulation_number = 100
+    simulation_number = 100000
 
     cards = [x + y for x in [str(z) for z in range(2,11)] + list("JQKA") for y in list("HSCD")]
 
@@ -22,7 +21,7 @@ def main():
     labels.reverse()
     df = pd.DataFrame(0, index=labels, columns=labels)
 
-    bar = Bar('Simulating', max=simulation_number, suffix='%(percent)d%%')
+    bar = IncrementalBarHours('Simulating', max=simulation_number)
 
     for i in range(simulation_number):
         seed(datetime.now())
@@ -60,6 +59,13 @@ def getDealtCards(num_players, cards=[]):
 
     return hand_list, cards[:5]
 
+class IncrementalBarHours(IncrementalBar):
+
+    suffix = '%(percent).1f%% | %(remaining_mins)dm |'
+
+    @property
+    def remaining_mins(self):
+        return self.eta // 60
 
 if __name__ == "__main__":
     main()
