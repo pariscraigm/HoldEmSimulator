@@ -1,5 +1,5 @@
-from . import Card
-from . import Hand
+from Card import Card
+from Hand import Hand
 import getWinner
 from random import seed, randint, shuffle
 from datetime import datetime
@@ -10,7 +10,7 @@ from progress.bar import IncrementalBar
 
 def main():
 
-    simulation_number = 100000
+    simulation_number = 1000000
 
     cards = [x + y for x in [str(z) for z in range(2,11)] + list("JQKA") for y in list("HSCD")]
 
@@ -44,6 +44,7 @@ def main():
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
     fig.savefig('holdem_simulation_results_' + "{:,}".format(simulation_number) + '.png')
+    plt.title('{:,}'.format(simulation_number) + " simulations")
     bar.finish()
     plt.show()
 

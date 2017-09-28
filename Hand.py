@@ -5,6 +5,7 @@ class Hand:
         self.cards = []
         self.value = 0
         self.best_cards = None
+        self.best_cards_value = []
         self.target_cards = []
         self.kickers = []
 

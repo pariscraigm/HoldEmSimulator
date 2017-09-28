@@ -65,13 +65,15 @@ def versatile_function(hand, func, hand_list=[]):
     if len(number_worked) > 1:
         highest = get_highest(number_worked)
         hand.best_cards = highest
+        hand.best_cards_value = Card.get_value_list(highest)
         return True
     elif len(number_worked) == 1:
         hand.best_cards = number_worked[0]
+        hand.best_cards_value = reversed(Card.get_value_list(number_worked[0]))
         return True
     return False
 
-def matches(match_num, cards=[], match_count = 1):
+def matches(match_num, hand,  cards=[], match_count = 1):
     counter = 0
     card_count = {}
     for card in cards:
@@ -79,45 +81,48 @@ def matches(match_num, cards=[], match_count = 1):
             card_count[card[:-1]] = 1
         else:
             card_count[card[:-1]] += 1
-    for value in card_count.values():
+    for key, value in card_count.iteritems():
         if value == match_num:
             counter += 1
             if counter == match_count:
+                hand.best_cards_value.append(Card.getValue(key[:-1]))
+                kickers = sorted([Card.getValue(k[:-1]) for k in card_count if k != key])
+                hand.kickers = reversed(kickers)
                 return True
     return False
 
 
 def is_four_of_a_kind(hand, hand_list):
     for i in hand_list:
-        if matches(4, i):
+        if matches(4, hand, i):
             hand.best_cards = i
             return True
     return False
 
 def is_full_house(hand, hand_list):
     for i in hand_list:
-        if matches(3,i) and matches(2, i):
+        if matches(3, hand, i) and matches(2, hand, i):
             hand.best_cards = i
             return True
     return False
 
 def is_three_of_a_kind(hand, hand_list):
     for i in hand_list:
-        if matches(3, i):
+        if matches(3, hand, i):
             hand.best_cards = i
             return True
     return False
 
 def is_two_pair(hand, hand_list):
     for i in hand_list:
-        if matches(2, i, 2):
+        if matches(2, hand, i, 2):
             hand.best_cards = i
             return True
     return False
 
 def is_pair(hand, hand_list):
     for i in hand_list:
-        if matches(2, i):
+        if matches(2, hand, i):
             hand.best_cards = i
             return True
     return False
@@ -132,7 +137,7 @@ def get_winner(player_hands, table_cards):
         hand_list = list(itertools.combinations(hand_str + table_cards, 5))
         hand_list = [list(x) for x in hand_list]
         if is_royal_flush(hand, hand_list):
-            hand.value = 10
+            return hand
         elif versatile_function(hand, straight_and_flush, hand_list):
             hand.value = 9
         elif is_four_of_a_kind(hand, hand_list):
@@ -153,11 +158,32 @@ def get_winner(player_hands, table_cards):
             hand.value = 1
 
     highest_value = 0
+    winning_hand_list = []
     winning_hand = None
 
     for hand in player_hands:
         if hand.value > highest_value:
             highest_value = hand.value
-            winning_hand = hand
+            winning_hand_list = [hand]
+        elif hand.value == highest_value:
+            winning_hand_list.append(hand)
+    if len(winning_hand_list) == 1:
+        return winning_hand_list[0]
+    elif len(winning_hand_list) > 1:
+        highest_card = 0
+        if highest_value == 9:
+            for hand in winning_hand_list:
+                if hand.best_cards_value[0] > 1:
+                    highest_card = hand.best_cards_value[0]
+                    winning_hand = hand
+            return winning_hand
+        if highest_value == 8:
+            if winning_hand_list[0].best_cards_value[0] > winning_hand_list[1].best_cards_value[0]:
+                return winning_hand_list[0]
+            else: return winning_hand_list[1]
+        if highest_value == 7:
+
+
+
 
     return winning_hand
