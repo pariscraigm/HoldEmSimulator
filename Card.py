@@ -20,6 +20,13 @@ def getValue(card):
     elif card == "A":
         return 14
 
+def get_value_list(cards=[]):
+    card_li = []
+    for card in cards:
+        card_li.append(getValue(card[:-1]))
+    card_li.sort()
+    return card_li
+
 
 def checkCard(self, card):
     global cards

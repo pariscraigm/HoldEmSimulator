@@ -2,6 +2,12 @@ import itertools
 import Card
 
 def flush(cards=[]):
+    """
+    Checks to see if the given cards are a flush.
+
+    :param cards: A list if strings of the form "card_value" + "suit" e.g. "KH"
+    :return: True if the given cards represent a flush, False otherwise
+    """
     suit = cards[1][-1]
     for card in cards:
         if card[-1] != suit:
@@ -9,6 +15,11 @@ def flush(cards=[]):
     return True
 
 def is_royal(cards=[]):
+    """
+
+    :param cards:
+    :return:
+    """
     for card in cards:
         if card[:-1] not in ["10","J","Q","K","A"]:
             return False
@@ -46,7 +57,7 @@ def get_highest(hands = []):
             highest = i
     return highest
 
-def versatile_function(hand, hand_list=[], func=max):
+def versatile_function(hand, func, hand_list=[]):
     number_worked = []
     for i in hand_list:
         if func(i):
@@ -122,15 +133,15 @@ def get_winner(player_hands, table_cards):
         hand_list = [list(x) for x in hand_list]
         if is_royal_flush(hand, hand_list):
             hand.value = 10
-        elif versatile_function(hand, hand_list, straight_and_flush):
+        elif versatile_function(hand, straight_and_flush, hand_list):
             hand.value = 9
         elif is_four_of_a_kind(hand, hand_list):
             hand.value = 8
         elif is_full_house(hand, hand_list):
             hand.value = 7
-        elif versatile_function(hand, hand_list, flush):
+        elif versatile_function(hand, flush, hand_list):
             hand.value = 6
-        elif versatile_function(hand, hand_list, straight):
+        elif versatile_function(hand, straight, hand_list):
             hand.value = 5
         elif is_three_of_a_kind(hand, hand_list):
             hand.value = 4

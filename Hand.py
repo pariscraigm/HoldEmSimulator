@@ -5,6 +5,8 @@ class Hand:
         self.cards = []
         self.value = 0
         self.best_cards = None
+        self.target_cards = []
+        self.kickers = []
 
     def addCard(self, card):
 

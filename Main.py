@@ -6,10 +6,13 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import pandas as pd
+from progress.bar import Bar
+import sys
 
 def main():
 
-    time1 = datetime.now()
+    simulation_number = 100
+
     cards = [x + y for x in [str(z) for z in range(2,11)] + list("JQKA") for y in list("HSCD")]
 
     x = []
@@ -19,9 +22,9 @@ def main():
     labels.reverse()
     df = pd.DataFrame(0, index=labels, columns=labels)
 
-    for i in range(10000000):
-        if (i % 10000 == 0):
-            print(i)
+    bar = Bar('Simulating', max=simulation_number, suffix='%(percent)d%%')
+
+    for i in range(simulation_number):
         seed(datetime.now())
         shuffle(cards)
         current_cards = list(cards)
@@ -31,6 +34,7 @@ def main():
         x = winning_hand.cards[0].card[:-1]
         y = winning_hand.cards[1].card[:-1]
         df.loc[x,y] += 1
+        bar.next()
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -40,10 +44,9 @@ def main():
     ax.set_yticklabels(['']+labels)
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
-    fig.savefig('holdem_simulation_results_10_million.png')
+    fig.savefig('holdem_simulation_results_' + "{:,}".format(simulation_number) + '.png')
+    bar.finish()
     plt.show()
-    time2 = datetime.now()
-    print(time2 - time1)
 
 def getDealtCards(num_players, cards=[]):
     hand_list=[]
