@@ -9,6 +9,7 @@ import pandas as pd
 
 def main():
 
+    time1 = datetime.now()
     cards = [x + y for x in [str(z) for z in range(2,11)] + list("JQKA") for y in list("HSCD")]
 
     x = []
@@ -18,7 +19,9 @@ def main():
     labels.reverse()
     df = pd.DataFrame(0, index=labels, columns=labels)
 
-    for i in range(100000):
+    for i in range(10000000):
+        if (i % 10000 == 0):
+            print(i)
         seed(datetime.now())
         shuffle(cards)
         current_cards = list(cards)
@@ -37,7 +40,10 @@ def main():
     ax.set_yticklabels(['']+labels)
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+    fig.savefig('holdem_simulation_results_10_million.png')
     plt.show()
+    time2 = datetime.now()
+    print(time2 - time1)
 
 def getDealtCards(num_players, cards=[]):
     hand_list=[]
