@@ -10,16 +10,13 @@ from progress.bar import IncrementalBar
 
 def main():
 
-    simulation_number = 1000000
+    simulation_number = 100
 
-    cards = [x + y for x in [str(z) for z in range(2,11)] + list("JQKA") for y in list("HSCD")]
-
-    x = []
-    y = []
+    cards = [x + y for x in [str(z) for z in range(2, 11)] + list("JQKA") for y in list("HSCD")]
 
     labels = [x for x in [str(y) for y in range(2, 11)] + list("JQKA")]
     labels.reverse()
-    df = pd.DataFrame(0, index=labels, columns=labels)
+    df = pd.DataFrame(0.0, index=labels, columns=labels)
 
     bar = IncrementalBarHours('Simulating', max=simulation_number)
 
@@ -28,13 +25,23 @@ def main():
         shuffle(cards)
         current_cards = list(cards)
         num_players = randint(2, 10)
-        hand_list, table_cards = getDealtCards(num_players, current_cards)
-        winning_hand = getWinner.get_winner(hand_list, table_cards)
-        x = winning_hand.cards[0].card[:-1]
-        y = winning_hand.cards[1].card[:-1]
-        df.loc[x,y] += 1
+        hand_list, table_cards = get_dealt_cards(num_players, current_cards)
+        winning_hand_list = getWinner.get_winner(hand_list, table_cards)
+        if len(winning_hand_list) == 1:
+            x = winning_hand_list[0].cards[0][:-1]
+            y = winning_hand_list[0].cards[1][:-1]
+            df.loc[x, y] += 1.0
+            df.loc[y, x] += 1.0
+        else:
+            for hand in winning_hand_list:
+                x = hand.cards[0][:-1]
+                y = hand.cards[1][:-1]
+                df.loc[x, y] += 1.0 / len(winning_hand_list)
+                df.loc[y, x] += 1.0 / len(winning_hand_list)
         bar.next()
 
+    # total = df.sum()
+    # df = df/total
     fig = plt.figure()
     ax = fig.add_subplot(111)
     cax = ax.matshow(df, cmap='hot')
@@ -48,17 +55,15 @@ def main():
     bar.finish()
     plt.show()
 
-def getDealtCards(num_players, cards=[]):
+
+def get_dealt_cards(num_players, cards=[]):
     hand_list=[]
     for j in range(num_players):
-        card_1 = Card(cards.pop())
-        card_2 = Card(cards.pop())
-        hand = Hand()
-        hand.addCard(card_1)
-        hand.addCard(card_2)
+        hand = Hand(cards.pop(),cards.pop())
         hand_list.append(hand)
 
     return hand_list, cards[:5]
+
 
 class IncrementalBarHours(IncrementalBar):
 

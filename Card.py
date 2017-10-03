@@ -1,12 +1,7 @@
 class Card:
 
-    def __init__(self, card):
+    cards = [x + y for x in [str(z) for z in range(2, 11)] + list("JQKA") for y in list("HSCD")]
 
-        self.card = checkCard(self, card)
-        self.value = getValue(card[:-1])
-        self.suit = card[-1]
-
-cards = [x + y for x in [str(z) for z in range(2, 11)] + list("JQKA") for y in list("HSCD")]
 
 def getValue(card):
     if card not in "JQKA":
@@ -20,7 +15,9 @@ def getValue(card):
     elif card == "A":
         return 14
 
+
 def get_value_list(cards=[]):
+
     card_li = []
     for card in cards:
         card_li.append(getValue(card[:-1]))
