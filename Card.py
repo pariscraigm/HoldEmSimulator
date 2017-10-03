@@ -1,6 +1,6 @@
-class Card:
 
-    cards = [x + y for x in [str(z) for z in range(2, 11)] + list("JQKA") for y in list("HSCD")]
+
+cards = [x + y for x in [str(z) for z in range(2, 11)] + list("JQKA") for y in list("HSCD")]
 
 
 def getValue(card):

@@ -1,4 +1,3 @@
-from Card import Card
 from Hand import Hand
 import getWinner
 from random import seed, randint, shuffle
